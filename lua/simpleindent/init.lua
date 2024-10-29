@@ -110,14 +110,14 @@ end
 
 -- local on_draw = function(bufnr, row, indent)
 --   for j = 0, indent - 1, M.shiftwidth do
---     extmark_opts.virt_text = { { "│", "IndentLine" } }
+--     extmark_opts.virt_text = { { M.conf.char, "IndentLine" } }
 --     extmark_opts.virt_text_win_col = j
 --     vim.api.nvim_buf_set_extmark(bufnr, M.ns_id, row, 0, extmark_opts)
 --   end
 -- end
 
 local on_draw_new = function(bufnr, scope)
-  extmark_opts.virt_text = { { "│", "IndentLine" } }
+  extmark_opts.virt_text = { { M.conf.char, "IndentLine" } }
   extmark_opts.virt_text_win_col = scope.indent
   for i = scope.top, scope.bottom - 2 do
     vim.api.nvim_buf_set_extmark(bufnr, M.ns_id, i, 0, extmark_opts)
