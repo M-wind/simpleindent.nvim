@@ -117,9 +117,9 @@ end
 -- end
 
 local on_draw_new = function(bufnr, scope)
+  extmark_opts.virt_text = { { "│", "IndentLine" } }
+  extmark_opts.virt_text_win_col = scope.indent
   for i = scope.top, scope.bottom - 2 do
-    extmark_opts.virt_text = { { "│", "IndentLine" } }
-    extmark_opts.virt_text_win_col = scope.indent
     vim.api.nvim_buf_set_extmark(bufnr, M.ns_id, i, 0, extmark_opts)
   end
 end
