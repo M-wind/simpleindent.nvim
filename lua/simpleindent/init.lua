@@ -144,7 +144,7 @@ local update_marks = function(bufnr, hl_group)
       vim.api.nvim_buf_set_extmark(bufnr, M.ns_id, v[2], 0, {
         id = v[1],
         virt_text_win_col = M.current_scope.indent,
-        virt_text = { { "│", hl_group } },
+        virt_text = { { M.conf.char, hl_group } },
         virt_text_pos = "overlay",
         hl_mode = "combine",
         priority = M.conf.priority,
