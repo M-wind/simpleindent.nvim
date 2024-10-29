@@ -37,7 +37,7 @@ IndentLine
 IndentLineCurrent
 ```
 
-##Acknowledgments
+## Acknowledgments
 
 Thanks goes to these people/projects for inspiration:
 
