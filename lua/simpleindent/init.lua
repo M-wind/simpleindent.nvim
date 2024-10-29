@@ -182,8 +182,8 @@ local refresh_all = function(bufnr, toprow, botrow)
     -- on_draw(bufnr, i - 1, indent)
     local scope = get_current_scope(i, indent, toprow, botrow)
     local is_contains = false
-    for _, k in pairs(SCOPE_SNAPSHOT) do
-      if contains(k, scope) then
+    for j = #SCOPE_SNAPSHOT, 1, -1 do
+      if contains(SCOPE_SNAPSHOT[j], scope) then
         is_contains = true
         break
       end
