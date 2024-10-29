@@ -36,3 +36,10 @@ IndentLine
 -- Current indent line highlight
 IndentLineCurrent
 ```
+
+##Acknowledgments
+
+Thanks goes to these people/projects for inspiration:
+
+- [echasnovski/mini.indentscope](https://github.com/echasnovski/mini.indentscope)
+- [nvimdev/indentmini.nvim](https://github.com/nvimdev/indentmini.nvim)
