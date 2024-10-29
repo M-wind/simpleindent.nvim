@@ -9,7 +9,8 @@ An Simple Indent Plugin for Nvim.
 ```lua
 {
     "M-wind/simpleindent.nvim",
-    opts = {}
+    event = "VeryLazy",
+    opts = {},
 }
 ```
 
