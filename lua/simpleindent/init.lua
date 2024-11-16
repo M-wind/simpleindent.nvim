@@ -6,6 +6,7 @@ M.current_scope = {}
 M.current_marks = {}
 M.ns_id = vim.api.nvim_create_namespace("SimpleIndent")
 M.conf = {}
+M.leftcol = 0
 
 local default_conf = {
   char = "│",
@@ -118,7 +119,10 @@ end
 
 local on_draw_new = function(bufnr, scope)
   extmark_opts.virt_text = { { M.conf.char, "IndentLine" } }
-  extmark_opts.virt_text_win_col = scope.indent
+  local col = scope.indent - M.leftcol
+  -- extmark_opts.virt_text_win_col = scope.indent
+  extmark_opts.virt_text_win_col = col
+  if col < 0 then return end
   for i = scope.top, scope.bottom - 2 do
     vim.api.nvim_buf_set_extmark(bufnr, M.ns_id, i, 0, extmark_opts)
   end
@@ -140,10 +144,11 @@ end
 
 local update_marks = function(bufnr, hl_group)
   for _, v in pairs(M.current_marks) do
-    if v[4].virt_text_win_col == M.current_scope.indent then
+    local col = M.current_scope.indent - M.leftcol
+    if v[4].virt_text_win_col == col then
       vim.api.nvim_buf_set_extmark(bufnr, M.ns_id, v[2], 0, {
         id = v[1],
-        virt_text_win_col = M.current_scope.indent,
+        virt_text_win_col = col,
         virt_text = { { M.conf.char, hl_group } },
         virt_text_pos = "overlay",
         hl_mode = "combine",
@@ -203,14 +208,15 @@ local cmd_event = function(bufnr, event)
   local toprow, botrow = view.topline, view.topline + height - 1
   local shiftwidth = vim.api.nvim_get_option_value("shiftwidth", { buf = bufnr })
   M.shiftwidth = shiftwidth
-  if view.lnum == M.currow and (event == "CursorMoved" or event == "CursorMovedI") then
-    return
-  end
+  M.leftcol = view.leftcol
+  -- if view.lnum == M.currow and (event == "CursorMoved" or event == "CursorMovedI") then
+  --   return
+  -- end
   vim.schedule(function()
     refresh_all(bufnr, toprow, botrow)
     highlight_current(bufnr, view.lnum)
   end)
-  M.currow = view.lnum
+  -- M.currow = view.lnum
 end
 
 return {
@@ -229,4 +235,3 @@ return {
     })
   end,
 }
-
