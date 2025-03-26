@@ -222,7 +222,7 @@ end
 return {
   setup = function(conf)
     init_conf(conf)
-    vim.api.nvim_create_autocmd({ "BufWinEnter", "CursorMoved", "CursorMovedI", "TextChanged", "TextChangedI", "CompleteChanged", "FileChangedShellPost", "FileType" }, {
+    vim.api.nvim_create_autocmd({ "BufWinEnter", "CursorMoved", "CursorMovedI", "TextChanged", "TextChangedI", "FileType" }, {
       group = vim.api.nvim_create_augroup("SimpleIndent", { clear = true }),
       pattern = "*",
       callback = function(opts)
