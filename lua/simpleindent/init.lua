@@ -122,7 +122,9 @@ local on_draw_new = function(bufnr, scope)
   local col = scope.indent - M.leftcol
   -- extmark_opts.virt_text_win_col = scope.indent
   extmark_opts.virt_text_win_col = col
-  if col < 0 then return end
+  if col < 0 then
+    return
+  end
   for i = scope.top, scope.bottom - 2 do
     vim.api.nvim_buf_set_extmark(bufnr, M.ns_id, i, 0, extmark_opts)
   end
@@ -200,6 +202,18 @@ local refresh_all = function(bufnr, toprow, botrow)
     on_draw_new(bufnr, scope)
     ::continue::
   end
+  local minIndent = vim.iter(SCOPE_SNAPSHOT):fold(10000, function(acc, v)
+    if v.indent < acc then
+      acc = v.indent
+    end
+    return acc
+  end)
+  if minIndent == 0 or minIndent == 10000 then
+    return
+  end
+  for i = 0, minIndent - M.shiftwidth, M.shiftwidth do
+    on_draw_new(bufnr, { top = toprow - 1, bottom = botrow + 1, indent = i })
+  end
 end
 
 local cmd_event = function(bufnr, event)
@@ -222,16 +236,20 @@ end
 return {
   setup = function(conf)
     init_conf(conf)
-    vim.api.nvim_create_autocmd({ "BufWinEnter", "CursorMoved", "CursorMovedI", "TextChanged", "TextChangedI", "FileType" }, {
-      group = vim.api.nvim_create_augroup("SimpleIndent", { clear = true }),
-      pattern = "*",
-      callback = function(opts)
-        if stop_draw(opts.buf, M.conf.exclude) then
-          return
-        end
-        cmd_event(opts.buf, opts.event)
-      end,
-      desc = "SimpleIndent",
-    })
+    vim.api.nvim_create_autocmd(
+      { "BufWinEnter", "CursorMoved", "CursorMovedI", "TextChanged", "TextChangedI", "FileType" },
+      {
+        group = vim.api.nvim_create_augroup("SimpleIndent", { clear = true }),
+        pattern = "*",
+        callback = function(opts)
+          if stop_draw(opts.buf, M.conf.exclude) then
+            return
+          end
+          cmd_event(opts.buf, opts.event)
+        end,
+        desc = "SimpleIndent",
+      }
+    )
   end,
 }
+
