@@ -199,7 +199,7 @@ local refresh_all = function(bufnr, toprow, botrow)
       goto continue
     end
     table.insert(SCOPE_SNAPSHOT, scope)
-    on_draw_new(bufnr, scope)
+    pcall(on_draw_new, bufnr, scope)
     ::continue::
   end
   local minIndent = vim.iter(SCOPE_SNAPSHOT):fold(10000, function(acc, v)
@@ -212,7 +212,7 @@ local refresh_all = function(bufnr, toprow, botrow)
     return
   end
   for i = 0, minIndent - M.shiftwidth, M.shiftwidth do
-    on_draw_new(bufnr, { top = toprow - 1, bottom = botrow + 1, indent = i })
+    pcall(on_draw_new, bufnr, { top = toprow - 1, bottom = botrow + 1, indent = i })
   end
 end
 
