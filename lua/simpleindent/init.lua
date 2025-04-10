@@ -52,8 +52,10 @@ local init_conf = function(conf)
 end
 
 local stop_draw = function(bufnr, exclude)
-  return bufnr ~= vim.api.nvim_get_current_buf()
-    or vim.list_contains(exclude.filetype, vim.bo[bufnr].ft)
+  -- return bufnr ~= vim.api.nvim_get_current_buf()
+  --   or vim.list_contains(exclude.filetype, vim.bo[bufnr].ft)
+  --   or vim.list_contains(exclude.buftype, vim.bo[bufnr].buftype)
+  return vim.list_contains(exclude.filetype, vim.bo[bufnr].ft)
     or vim.list_contains(exclude.buftype, vim.bo[bufnr].buftype)
 end
 
@@ -216,7 +218,7 @@ local refresh_all = function(bufnr, toprow, botrow)
   end
 end
 
-local cmd_event = function(bufnr, event)
+local cmd_event = function(bufnr)
   local view = vim.fn.winsaveview()
   local height = vim.api.nvim_win_get_height(0)
   local toprow, botrow = view.topline, view.topline + height - 1
@@ -245,11 +247,10 @@ return {
           if stop_draw(0, M.conf.exclude) then
             return
           end
-          cmd_event(0, opts.event)
+          cmd_event(0)
         end,
         desc = "SimpleIndent",
       }
     )
   end,
 }
-
