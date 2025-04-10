@@ -241,11 +241,11 @@ return {
       {
         group = vim.api.nvim_create_augroup("SimpleIndent", { clear = true }),
         pattern = "*",
-        callback = function(opts)
-          if stop_draw(opts.buf, M.conf.exclude) then
+        callback = function(0)
+          if stop_draw(0, M.conf.exclude) then
             return
           end
-          cmd_event(opts.buf, opts.event)
+          cmd_event(0, opts.event)
         end,
         desc = "SimpleIndent",
       }
