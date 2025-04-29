@@ -223,7 +223,8 @@ local cmd_event = function(bufnr)
   local height = vim.api.nvim_win_get_height(0)
   local toprow, botrow = view.topline, view.topline + height - 1
   local shiftwidth = vim.api.nvim_get_option_value("shiftwidth", { buf = bufnr })
-  M.shiftwidth = shiftwidth
+  local is_tab = not vim.api.nvim_get_option_value("expandtab", { buf = bufnr })
+  M.shiftwidth = is_tab and vim.api.nvim_get_option_value("tabstop", { buf = bufnr }) or shiftwidth
   M.leftcol = view.leftcol
   -- if view.lnum == M.currow and (event == "CursorMoved" or event == "CursorMovedI") then
   --   return
@@ -254,3 +255,4 @@ return {
     )
   end,
 }
+
