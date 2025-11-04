@@ -24,30 +24,40 @@ local validata_list_string = function(data)
 end
 
 local init_conf = function(conf)
-  vim.validate({ conf = { conf, "table", true } })
   if conf.exclude ~= nil then
     vim.list_extend(conf.exclude.filetype or {}, default_conf.exclude.filetype)
     vim.list_extend(conf.exclude.buftype or {}, default_conf.exclude.buftype)
   end
   conf = vim.tbl_deep_extend("force", default_conf, conf or {})
-  vim.validate({
-    priority = { conf.priority, "number" },
-    char = { conf.char, "string" },
-    filetype = {
-      conf.exclude.filetype,
-      function()
-        return validata_list_string(conf.exclude.filetype)
-      end,
-      "exclude[filetype] should be a list string",
-    },
-    buftype = {
-      conf.exclude.buftype,
-      function()
-        return validata_list_string(conf.exclude.buftype)
-      end,
-      "exclude[buftype] should be a list string",
-    },
-  })
+  if vim.version.ge(vim.version(), { 0, 11, 0 }) then
+    vim.validate("priority", conf.priority, "number")
+    vim.validate("char", conf.char, "string")
+    vim.validate("filetype", conf.exclude.filetype, function()
+      return validata_list_string(conf.exclude.filetype)
+    end, "exclude[filetype] should be a list string")
+    vim.validate("buftype", conf.exclude.buftype, function()
+      return validata_list_string(conf.exclude.buftype)
+    end, "exclude[buftype] should be a list string")
+  else
+    vim.validate({
+      priority = { conf.priority, "number" },
+      char = { conf.char, "string" },
+      filetype = {
+        conf.exclude.filetype,
+        function()
+          return validata_list_string(conf.exclude.filetype)
+        end,
+        "exclude[filetype] should be a list string",
+      },
+      buftype = {
+        conf.exclude.buftype,
+        function()
+          return validata_list_string(conf.exclude.buftype)
+        end,
+        "exclude[buftype] should be a list string",
+      },
+    })
+  end
   M.conf = conf
 end
 
@@ -255,4 +265,3 @@ return {
     )
   end,
 }
-
